@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Designer - Add Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/collections">Collections</a>
+        <a href="/designer/products/add">Upload Work</a>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
+    <!-- Add Product Section -->
+    <section class="designer">
+        <h1>Upload Your Design</h1>
+        <form method="POST" action="/designer/products/add">
+            <label>Name:</label><br>
+            <input type="text" name="name" required><br><br>
+
+            <label>Description:</label><br>
+            <textarea name="description" required></textarea><br><br>
+
+            <label>Price:</label><br>
+            <input type="number" step="0.01" name="price" required><br><br>
+
+            <label>Stock:</label><br>
+            <input type="number" name="stock" required><br><br>
+
+            <label>Image Path:</label><br>
+            <input type="text" name="image"><br><br>
+
+            <button type="submit">Upload Product</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 Vibana. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/collections">Collections</a>
+        <a href="/contact">Contact</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <!-- Register Section -->
+    <section class="register">
+        <h1>Create an Account</h1>
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="role">Role:</label><br>
+                <select id="role" name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="designer">Designer</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <br>
+            <button type="submit">Register</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 My Website. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="https://wa.me/919876543210" target="_blank">WhatsApp</a>
+            <a href="https://www.instagram.com/vibanaofficial" target="_blank">Instagram</a>
+            <a href="mailto:info@vibana.co.in">Email</a>
+        </div>
+    </footer>
+</body>
+</html>

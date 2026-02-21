@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Designer - Edit Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/collections">Collections</a>
+        <a href="/designer/products/add">Upload Work</a>
+    </nav>
+    
+    <!-- Edit Product Section -->
+    <section class="designer">
+        <h1>Edit Your Design</h1>
+        <form method="POST" action="/designer/products/edit/{{ product.id }}">
+            <label>Name:</label><br>
+            <input type="text" name="name" value="{{ product.name }}" required><br><br>
+
+            <label>Description:</label><br>
+            <textarea name="description" required>{{ product.description }}</textarea><br><br>
+
+            <label>Price:</label><br>
+            <input type="number" step="0.01" name="price" value="{{ product.price }}" required><br><br>
+
+            <label>Stock:</label><br>
+            <input type="number" name="stock" value="{{ product.stock }}" required><br><br>
+
+            <label>Image Path:</label><br>
+            <input type="text" name="image" value="{{ product.image }}"><br><br>
+
+            <button type="submit">Update Product</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 Vibana. All rights reserved.</p>
+    </footer>
+</body>
+</html>

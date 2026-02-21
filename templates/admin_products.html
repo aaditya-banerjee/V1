@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<!-- Navigation -->
+	<nav>
+		<a href="/">Home</a>
+		<a href="/about">About</a>
+		<a href="/collections">Collections</a>
+		<a href="/contact">Contact</a>
+		{% if current_user.is_authenticated %}
+			{% if current_user.role == "admin" %}
+				<a href="/admin/products">Admin Dashboard</a>
+			{% elif current_user.role == "designer" %}
+				<a href="/designer/products/add">Upload Design</a>
+			{% endif %}
+			<a href="/logout">Logout</a>
+		{% endif %}
+	</nav>
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <h1>Manage Products</h1>
+    <a href="/admin/products/add">Add New Product</a>
+    <ul>
+    {% for product in products %}
+		<li>
+			<strong>{{ product.name }}</strong> - {{ product.price }} USD
+			<br>{{ product.description }}
+			<br>Stock: {{ product.stock }}
+			<br>
+			<a href="/admin/products/edit/{{ product.id }}">Edit</a>
+			<form method="POST" action="/admin/products/delete/{{ product.id }}" style="display:inline;">
+				<button type="submit">Delete</button>
+			</form>
+		</li>
+		{% endfor %}
+	</ul>
+</body>
+</html>
