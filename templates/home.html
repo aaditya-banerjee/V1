@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vibana - Wear the Vibe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/about">About</a>
+        <a href="/collections">Collections</a>
+        <a href="/contact">Contact</a>
+        {% if current_user.is_authenticated %}
+            <a href="/cart">Cart</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </nav>
+
+    <section class="hero">
+        <h1>Wear the Vibe. Live the Nirvana.</h1>
+        <p>Spiritual & Peacewear • Nomad Carry • Mindful Sip</p>
+        <img src="{{ url_for('static', filename='images/banner.jpg') }}" alt="Vibana Banner">
+    </section>
+</body>
+</html>

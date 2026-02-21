@@ -29,6 +29,18 @@ class Product(db.Model):
     stock = db.Column(db.Integer, default=0)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+class CartItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    quantity = db.Column(db.Integer, default=1)
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    total = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(50), default="Pending")
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -38,7 +50,7 @@ def load_user(user_id):
 # -------------------------
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("home.html")
 
 @app.route("/about")
 def about():
@@ -52,6 +64,49 @@ def collections():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+@app.route("/cart")
+@login_required
+def cart():
+    items = CartItem.query.filter_by(user_id=current_user.id).all()
+    return render_template("cart.html", items=items)
+
+@app.route("/cart/add/<int:product_id>")
+@login_required
+def add_to_cart(product_id):
+    item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    if item:
+        item.quantity += 1
+    else:
+        new_item = CartItem(user_id=current_user.id, product_id=product_id, quantity=1)
+        db.session.add(new_item)
+    db.session.commit()
+    flash("Product added to cart!", "success")
+    return redirect(url_for("collections"))
+
+@app.route("/cart/remove/<int:item_id>")
+@login_required
+def remove_from_cart(item_id):
+    item = CartItem.query.get(item_id)
+    if item and item.user_id == current_user.id:
+        db.session.delete(item)
+        db.session.commit()
+        flash("Item removed from cart.", "info")
+    return redirect(url_for("cart"))
+
+@app.route("/checkout")
+@login_required
+def checkout():
+    items = CartItem.query.filter_by(user_id=current_user.id).all()
+    total = sum([item.quantity * Product.query.get(item.product_id).price for item in items])
+
+    new_order = Order(user_id=current_user.id, total=total, status="Pending")
+    db.session.add(new_order)
+    CartItem.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+
+    flash("Order placed successfully!", "success")
+    return redirect(url_for("collections"))
 
 # -------------------------
 # REGISTER
@@ -139,6 +194,16 @@ def add_product():
         flash("Product added successfully!", "success")
         return redirect(url_for("admin_products"))
     return render_template("add_product.html")
+
+@app.route("/admin/orders")
+@login_required
+def admin_orders():
+    if current_user.role != "admin":
+        flash("Access denied!", "danger")
+        return redirect(url_for("home"))
+    orders = Order.query.all()
+    return render_template("admin_orders.html", orders=orders)
+
 
 # -------------------------
 # DESIGNER ROUTES
